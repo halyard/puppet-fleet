@@ -60,7 +60,7 @@ cp \$LEGO_HOOK_CERT_KEY_PATH ${datadir}/certs/key
     args  => [
       "--ip ${ip}",
       "-v ${datadir}/certs:/certs",
-      "-e FLEET_REDIS_ADDRESS=${fleet::redis::ip}",
+      "-e FLEET_REDIS_ADDRESS=${fleet::redis::ip}:6379",
       "-e FLEET_REDIS_PASSWORD=${fleet::redis::password}",
       "-e FLEET_MYSQL_ADDRESS=${fleet::mysql::ip}",
       '-e FLEET_MYSQL_DATABASE=fleet',
