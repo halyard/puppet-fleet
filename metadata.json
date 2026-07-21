@@ -1,0 +1,12 @@
+{
+  "name": "halyard-fleet",
+  "version": "0.0.0",
+  "author": "Les Aker",
+  "license": "MIT",
+  "summary": "Configure fleet mdm instance",
+  "source": "https://github.com/halyard/puppet-fleet",
+  "project_page": "https://github.com/halyard/puppet-fleet",
+  "issues_url": "https://github.com/halyard/puppet-fleet/issues",
+  "dependencies": [],
+  "operatingsystem_support": []
+}
