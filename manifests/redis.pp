@@ -19,7 +19,7 @@ class fleet::redis (
 
   file { "${redis_datadir}/config/redis.conf":
     ensure  => file,
-    content => template('redis/redis.conf.erb'),
+    content => template('fleet/redis.conf.erb'),
     notify  => Service['container@redis'],
   }
 
