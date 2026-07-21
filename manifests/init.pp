@@ -7,6 +7,10 @@
 # @param aws_secret_access_key sets the AWS secret key to use for the Route53 challenge
 # @param email sets the contact address for the certificate
 # @param ip sets the address of the Docker container
+# @param backup_target sets the target repo for backups
+# @param backup_password sets the encryption key for backup snapshots
+# @param backup_environment sets the env vars to use for backups
+# @param backup_rclone sets the config for an rclone backend
 class fleet (
   String $hostname,
   String $datadir,
@@ -15,6 +19,10 @@ class fleet (
   String $aws_secret_access_key,
   String $email,
   String $ip = '172.17.0.2',
+  Optional[String] $backup_target = undef,
+  Optional[String] $backup_password = undef,
+  Optional[Hash[String, String]] $backup_environment = undef,
+  Optional[String] $backup_rclone = undef,
 ) {
   include fleet::postgres
   include fleet::redis
