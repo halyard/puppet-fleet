@@ -7,7 +7,7 @@
 # @param backup_watchdog sets the watchdog URL for mysql dumps
 class fleet::mysql (
   String $service_password,
-  Strng $root_password,
+  String $root_password,
   String $ip = '172.17.0.4',
   String $backup_ip = '172.17.0.5',
   Optional[String] $backup_watchdog = undef,
