@@ -16,9 +16,13 @@ class fleet::mysql (
   file { [
       $mysql_datadir,
       "${mysql_datadir}/data",
-      "${mysql_datadir}/backup",
     ]:
       ensure => directory,
+  }
+
+  -> file { "${mysql_datadir}/backup":
+    ensure => directory,
+    owner  => 1005,
   }
 
   -> docker::container { 'mysql':
