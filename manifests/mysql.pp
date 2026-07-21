@@ -26,7 +26,7 @@ class fleet::mysql (
   }
 
   -> docker::container { 'mysql':
-    image => 'mysql:9',
+    image => 'mysql:8',
     args  => [
       "--ip ${ip}",
       "-v ${mysql_datadir}/data:/var/lib/mysql",
