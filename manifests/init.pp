@@ -24,7 +24,7 @@ class fleet (
   Optional[Hash[String, String]] $backup_environment = undef,
   Optional[String] $backup_rclone = undef,
 ) {
-  include fleet::postgres
+  include fleet::mysql
   include fleet::redis
 
   $hook_script =  "#!/usr/bin/env bash
