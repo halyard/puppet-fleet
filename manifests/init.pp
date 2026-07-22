@@ -6,6 +6,7 @@
 # @param aws_access_key_id sets the AWS key to use for Route53 challenge
 # @param aws_secret_access_key sets the AWS secret key to use for the Route53 challenge
 # @param email sets the contact address for the certificate
+# @param metrics_password sets the basic auth password for /metrics endpoint
 # @param ip sets the address of the Docker container
 # @param backup_target sets the target repo for backups
 # @param backup_password sets the encryption key for backup snapshots
@@ -18,6 +19,7 @@ class fleet (
   String $aws_access_key_id,
   String $aws_secret_access_key,
   String $email,
+  String $metrics_password,
   String $ip = '172.17.0.2',
   Optional[String] $backup_target = undef,
   Optional[String] $backup_password = undef,
@@ -71,7 +73,9 @@ chown 100 ${datadir}/certs/cert ${datadir}/certs/key
       '-e FLEET_SERVER_CERT=/certs/cert',
       '-e FLEET_SERVER_KEY=/certs/key',
       "-e FLEET_SERVER_PRIVATE_KEY=${private_key}",
+      '-e FLEET_PROMETHEUS_BASIC_AUTH_USERNAME=prom',
+      "-e FLEET_PROMETHEUS_BASIC_AUTH_PASSWORD=${metrics_password}",
     ],
-    cmd   => '/usr/bin/fleet serve',
+    cmd   => 'sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"',
   }
 }
