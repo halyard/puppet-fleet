@@ -76,6 +76,6 @@ chown 100 ${datadir}/certs/cert ${datadir}/certs/key
       '-e FLEET_PROMETHEUS_BASIC_AUTH_USERNAME=prom',
       "-e FLEET_PROMETHEUS_BASIC_AUTH_PASSWORD=${metrics_password}",
     ],
-    cmd   => 'sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"',
+    cmd   => 'sh -c \"/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve\"',
   }
 }
