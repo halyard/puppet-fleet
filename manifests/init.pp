@@ -6,7 +6,12 @@
 # @param aws_access_key_id sets the AWS key to use for Route53 challenge
 # @param aws_secret_access_key sets the AWS secret key to use for the Route53 challenge
 # @param email sets the contact address for the certificate
+# @param metrics_password sets the basic auth password for /metrics endpoint
 # @param ip sets the address of the Docker container
+# @param backup_target sets the target repo for backups
+# @param backup_password sets the encryption key for backup snapshots
+# @param backup_environment sets the env vars to use for backups
+# @param backup_rclone sets the config for an rclone backend
 class fleet (
   String $hostname,
   String $datadir,
@@ -14,14 +19,20 @@ class fleet (
   String $aws_access_key_id,
   String $aws_secret_access_key,
   String $email,
+  String $metrics_password,
   String $ip = '172.17.0.2',
+  Optional[String] $backup_target = undef,
+  Optional[String] $backup_password = undef,
+  Optional[Hash[String, String]] $backup_environment = undef,
+  Optional[String] $backup_rclone = undef,
 ) {
-  include fleet::postgres
+  include fleet::mysql
   include fleet::redis
 
   $hook_script =  "#!/usr/bin/env bash
 cp \$LEGO_HOOK_CERT_PATH ${datadir}/certs/cert
 cp \$LEGO_HOOK_CERT_KEY_PATH ${datadir}/certs/key
+chown 100 ${datadir}/certs/cert ${datadir}/certs/key
 /usr/bin/systemctl restart container@fleet"
 
   file { [
@@ -52,7 +63,7 @@ cp \$LEGO_HOOK_CERT_KEY_PATH ${datadir}/certs/key
     args  => [
       "--ip ${ip}",
       "-v ${datadir}/certs:/certs",
-      "-e FLEET_REDIS_ADDRESS=${fleet::redis::ip}",
+      "-e FLEET_REDIS_ADDRESS=${fleet::redis::ip}:6379",
       "-e FLEET_REDIS_PASSWORD=${fleet::redis::password}",
       "-e FLEET_MYSQL_ADDRESS=${fleet::mysql::ip}",
       '-e FLEET_MYSQL_DATABASE=fleet',
@@ -62,7 +73,9 @@ cp \$LEGO_HOOK_CERT_KEY_PATH ${datadir}/certs/key
       '-e FLEET_SERVER_CERT=/certs/cert',
       '-e FLEET_SERVER_KEY=/certs/key',
       "-e FLEET_SERVER_PRIVATE_KEY=${private_key}",
+      '-e FLEET_PROMETHEUS_BASIC_AUTH_USERNAME=prom',
+      "-e FLEET_PROMETHEUS_BASIC_AUTH_PASSWORD=${metrics_password}",
     ],
-    cmd   => '/usr/bin/fleet serve',
+    cmd   => 'sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"',
   }
 }
