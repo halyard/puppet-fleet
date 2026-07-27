@@ -8,6 +8,7 @@
 # @param email sets the contact address for the certificate
 # @param metrics_password sets the basic auth password for /metrics endpoint
 # @param ip sets the address of the Docker container
+# @param image sets the Docker image to fetch for the container
 # @param backup_target sets the target repo for backups
 # @param backup_password sets the encryption key for backup snapshots
 # @param backup_environment sets the env vars to use for backups
@@ -21,6 +22,7 @@ class fleet (
   String $email,
   String $metrics_password,
   String $ip = '172.17.0.2',
+  String $image = 'fleetdm/fleet:main',
   Optional[String] $backup_target = undef,
   Optional[String] $backup_password = undef,
   Optional[Hash[String, String]] $backup_environment = undef,
@@ -59,7 +61,7 @@ chown 100 ${datadir}/certs/cert ${datadir}/certs/key
   }
 
   -> docker::container { 'fleet':
-    image => 'fleetdm/fleet:main',
+    image => $image,
     args  => [
       "--ip ${ip}",
       "-v ${datadir}/certs:/certs",
